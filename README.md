@@ -25,8 +25,8 @@ This project aim to automatically organizes downloaded files from a source folde
 
 You can choose three different method to run MediaFlowrr:
 
-1. [Using Docker](#using-python)
-2. [Using Python](#using-docker)
+1. [Using Docker](#using-docker)
+2. [Using Python](#using-python)
 3. [As system service](#running-as-a-linux-service)
 
 ### Using Python
@@ -59,7 +59,7 @@ You can choose three different method to run MediaFlowrr:
    python entrypoint.sh
 ```
 
-## 🐧 Running as a Linux service
+### Running as a Linux service
 
 You can run MediaFlowrr automatically at boot using `systemd`.
 
