@@ -69,9 +69,28 @@ This project aim to automatically organizes downloaded files from a source folde
      -v /host/downloads:/path/to/downloads:ro \
      -v /host/library:/path/to/library \
      ghcr.io/giuseppe99barchetta/mediaflowrr:latest
+```
 
-2. **Or use the docker-compose.yml**:
-
+2. **Or use the docker-compose**:
+```yaml
+   version: "3.8"
+   services:
+     mediaflowrr:
+       image: ghcr.io/giuseppe99barchetta/mediaflowrr:latest
+       volumes:
+         - /mnt/jdownloader:/media/source
+         - /mnt/jellyfin:/media/library
+       env_file:
+         - SOURCE_FOLDER=/jdownloader/downloads
+         - LIBRARY_FOLDER=/path/to/your/library
+         - MOVIE_FOLDER=movies
+         - TV_FOLDER=tv
+         - CHUNK_SIZE=4096
+         - TMDB_API_KEY=YOUR_TMDB_API_KEY
+         - LOG_LEVEL=INFO
+         - FILE_NAME_LANGUAGE=en-EN
+         - CRON_SCHEDULE=*/30 * * * *
+         - TZ=Europe/Rome
 ```
 
 ## Contributing
