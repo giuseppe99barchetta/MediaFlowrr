@@ -21,18 +21,26 @@ This project aim to automatically organizes downloaded files from a source folde
 - **Docker (Optional)**: For containerized deployment.
 - **TMDB API Key (Optional)**: You can obtain an API key from [TMDB](https://www.themoviedb.org/).
 
+## How to run MediaFlowrr?
+
+You can choose three different method to run MediaFlowrr:
+
+1. [Using Docker](#using-python)
+2. [Using Python](#using-docker)
+3. [As system service](#running-as-a-linux-service)
+
 ### Using Python
 
 1. **Clone the Repository**:
-   ```bash
+```bash
    git clone https://github.com/giuseppe99barchetta/MediaFlowrr
    cd MediaFlowrr
-   ```
+```
 
 2. **Install Dependencies**:
-   ```bash
+```bash
    pip install -r requirements.txt
-   ```
+```
 
 3. **Configure the Script**:
    Create a `.env` file with your specific settings:
@@ -46,18 +54,67 @@ This project aim to automatically organizes downloaded files from a source folde
    - `CRON_SCHEDULE`: Cron expression to schedule periodic runs inside the container.
    - `TZ` (optional): Timezone string for scheduling.
 
-## Usage
+4. **Run MediaFlowrr**:
+```bash
+   python entrypoint.sh
+```
 
-1. **Populate Download Folder**:
-   Ensure that the downloader has completed downloading the files you want to organize and they are present in its download folder.
+## 🐧 Running as a Linux service
 
-2. **Run the Script**:
-   ```bash
-   python entrypoint.py
-   ```
+You can run MediaFlowrr automatically at boot using `systemd`.
 
-3. **Monitor Logs**:
-   The script will log its progress, including any errors or skipped files. Check the console output for information.
+### 1. Create a service unit file
+
+Save the following as `/etc/systemd/system/mediaflowrr.service`:
+
+```ini
+[Unit]
+Description=MediaFlowrr - Media Organizer
+After=network.target
+
+[Service]
+Type=simple
+User=your_username
+WorkingDirectory=/home/your_username/MediaFlowrr
+EnvironmentFile=/home/your_username/MediaFlowrr/.env
+ExecStart=/usr/bin/python3 /home/your_username/MediaFlowrr/entrypoint.py
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+```
+
+> 🔁 Replace `your_username` and paths as needed.
+
+---
+
+### 2. Configure the environment variables
+   Create a `.env` file with your specific settings:
+
+   - `SOURCE_FOLDER`: The directory where your downloader places the media.
+   - `LIBRARY_FOLDER`: The root directory where your media files are stored.
+   - `MOVIE_FOLDER`: The subfolder within `LIBRARY_FOLDER` for movies.
+   - `TV_FOLDER`: The subfolder within `LIBRARY_FOLDER` for TV shows.
+   - `TMDB_API_KEY`: API key retrieved from [TMDB](https://www.themoviedb.org/).
+   - `CHUNK_SIZE`: The chunk size used when copying files from source folder to media folder (adjust if needed).
+   - `CRON_SCHEDULE`: Cron expression to schedule periodic runs inside the container.
+   - `TZ` (optional): Timezone string for scheduling.
+
+---
+
+### 3. Enable and start the service
+
+```bash
+sudo systemctl daemon-reexec
+sudo systemctl daemon-reload
+sudo systemctl enable mediaflowrr
+sudo systemctl start mediaflowrr
+```
+
+To check logs:
+```bash
+journalctl -u mediaflowrr -f
+```
 
 ---
 
@@ -71,8 +128,6 @@ This project aim to automatically organizes downloaded files from a source folde
 2. **Run the container, passing your variables**:
 ```bash
    docker run -d \
-     -e SOURCE_FOLDER=/path/to/downloads \
-     -e LIBRARY_FOLDER=/path/to/library \
      -e MOVIE_FOLDER=movies \
      -e TV_FOLDER=tv \
      -e TMDB_API_KEY=your_api_key_here \
