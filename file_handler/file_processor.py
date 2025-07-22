@@ -15,6 +15,13 @@ class FileProcessor:
     def process_files(self):
         """Processes all files in the download folder."""
         try:
+            logger.info("Starting file processing...")
+            
+            # Ensure the source folder exists
+            if not os.path.exists(self.config.SOURCE_FOLDER):
+                logger.error(f"Source folder {self.config.SOURCE_FOLDER} does not exist.")
+                return
+            
             files = [f for f in os.listdir(self.config.SOURCE_FOLDER) if os.path.isfile(os.path.join(self.config.SOURCE_FOLDER, f))]
             for filename in files:
                 filepath = os.path.join(self.config.SOURCE_FOLDER, filename)

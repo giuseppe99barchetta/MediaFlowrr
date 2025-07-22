@@ -1,0 +1,84 @@
+name: Bump version, Build & Push Docker image to GHCR
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  bump-version:
+    runs-on: ubuntu-latest
+    outputs:
+      new_version: ${{ steps.bump_version.outputs.new_version }}
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4.2.2
+
+      - name: Set up Node.js (for semver)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install -y jq
+
+      - name: Bump patch version in version.py
+        id: bump_version
+        run: |
+          VERSION_FILE="config/version.py"
+          current_version=$(grep '^__version__' $VERSION_FILE | sed -E 's/__version__ = "(.*)"/\1/')
+          echo "Current version: $current_version"
+          new_version=$(npx semver $current_version -i patch)
+          echo "New version: $new_version"
+          sed -i -E "s/^(__version__ = \").*(\")$/\1$new_version\2/" $VERSION_FILE
+          echo "new_version=$new_version" >> $GITHUB_ENV
+          echo "::set-output name=new_version::$new_version"
+
+      - name: Commit and push new version
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add config/version.py
+          git commit -m "chore: bump version to ${{ steps.bump_version.outputs.new_version }}" || echo "No changes to commit"
+          git tag -a "v${{ steps.bump_version.outputs.new_version }}" -m "Release v${{ steps.bump_version.outputs.new_version }}" || echo "Tag already exists"
+          git pull origin main --rebase
+          git push origin main
+          git push origin "v${{ steps.bump_version.outputs.new_version }}" || echo "Tag already pushed"
+
+  build-and-push:
+    needs: bump-version
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4.2.2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3.11.1
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3.4.0
+        with:
+          registry: ghcr.io
+          username: giuseppe99barchetta
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build & Push
+        id: build-and-push
+        env:
+          NEW_VERSION: ${{ needs.bump-version.outputs.new_version }}
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: |
+            ghcr.io/giuseppe99barchetta/mediaflowrr:latest
+            ghcr.io/giuseppe99barchetta/mediaflowrr:${{ env.NEW_VERSION }}
+
+      - name: Image digest
+        run: echo "Pushed digest ${{ steps.build-and-push.outputs.digest }}"

@@ -5,13 +5,14 @@ from client.tmdb_client import TMDBClient
 from file_handler.file_organizer import FileOrganizer
 from file_handler.file_processor import FileProcessor
 from config.logger import Logger
+from config.version import __version__
 
 
 # Load environment variables and initialize configuration *before* main()
 load_dotenv()  # Load environment variables from .env file
 config = Config()
 config.validate_config()
-logger = Logger(__name__, config)
+logger = Logger("main", config)
 
 def main():
     """Main function to execute the organization process."""
@@ -23,7 +24,7 @@ def main():
     file_organizer = FileOrganizer(config, tmdb_client)
     logger.debug("File organizer initialized successfully.")
 
-    logger.info("Application started. Processing files...")
+    logger.info(f"MediaFlowrr {__version__} started successfully.")
 
     # Create a file processor and start processing
     file_processor = FileProcessor(config, file_organizer)
