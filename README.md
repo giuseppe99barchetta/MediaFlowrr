@@ -57,6 +57,7 @@ This project aim to automatically organizes downloaded files from a source folde
 1. **Pull the Docker image from GHCR**:
 ```bash
 docker pull ciuse99/mediaflowrr:latest
+```
 
 2. **Run the container, passing your variables**:
 ```bash
