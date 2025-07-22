@@ -8,6 +8,9 @@ on:
 jobs:
   bump-version:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write  # Required to push changes and tags
+      packages: write  # Required to push Docker images
     outputs:
       new_version: ${{ steps.bump_version.outputs.new_version }}
 
@@ -34,6 +37,12 @@ jobs:
           sed -i -E "s/^(__version__ = \").*(\")$/\1$new_version\2/" $VERSION_FILE
           echo "new_version=$new_version" >> $GITHUB_ENV
           echo "::set-output name=new_version::$new_version"
+
+      - name: Setup Git for pushing
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git remote set-url origin https://x-access-token:${{ secrets.GHCR }}@github.com/giuseppe99barchetta/MediaFlowrr.git
 
       - name: Commit and push new version
         run: |
@@ -66,7 +75,7 @@ jobs:
         with:
           registry: ghcr.io
           username: giuseppe99barchetta
-          password: ${{ secrets.GITHUB_TOKEN }}
+          password: ${{ secrets.GHCR }}
 
       - name: Build & Push
         id: build-and-push
