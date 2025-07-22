@@ -1,5 +1,7 @@
 # MediaFlowrr
 
+![MediaFlowrr Logo](https://github.com/giuseppe99barchetta/MediaFlowrr/blob/main/unraid/logo.png)
+
 This project aim to automatically organizes downloaded files from a source folder (for example JDownloader download folder), renaming them and moving them into appropriate folders based on movie/TV show information retrieved from the TMDB API. It’s designed (but not mandatory) to integrate with media server software like Jellyfin or Plex.
 
 ## Prerequisites
@@ -46,13 +48,13 @@ This project aim to automatically organizes downloaded files from a source folde
 ## Configuration (`.env`) Example
 
 ```python
-# config.py
-SOURCE_FOLDER = "/jdownloader/downloads"
-LIBRARY_FOLDER = "/path/to/your/library"
-MOVIE_FOLDER = "movies"
-TV_FOLDER = "tv"
-CHUNK_SIZE = 4096  # Adjust if needed for performance
-TMDB_API_KEY = "YOUR_TMDB_API_KEY"
+# .env
+SOURCE_FOLDER=/jdownloader/downloads
+LIBRARY_FOLDER=/path/to/your/library
+MOVIE_FOLDER=movies
+TV_FOLDER=tv
+CHUNK_SIZE=4096  # Adjust if needed for performance
+TMDB_API_KEY=YOUR_TMDB_API_KEY
 ```
 
 ## Contributing
