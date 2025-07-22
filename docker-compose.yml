@@ -16,3 +16,4 @@ services:
       - FILE_NAME_LANGUAGE=en-EN
       - CRON_SCHEDULE=*/30 * * * *
       - TZ=Europe/Rome
+    restart: unless-stopped

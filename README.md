@@ -56,7 +56,7 @@ This project aim to automatically organizes downloaded files from a source folde
 
 1. **Pull the Docker image from GHCR**:
 ```bash
-docker pull ciuse99/mediaflowrr:latest
+   docker pull ciuse99/mediaflowrr:latest
 ```
 
 2. **Run the container, passing your variables**:
@@ -82,7 +82,7 @@ docker pull ciuse99/mediaflowrr:latest
    version: "3.8"
    services:
      mediaflowrr:
-       image: ciuse99/mediaflowrr:latest
+       image: ghcr.io/giuseppe99barchetta/mediaflowrr:latest
        volumes:
          - /mnt/jdownloader:/media/source
          - /mnt/jellyfin:/media/library
@@ -97,6 +97,7 @@ docker pull ciuse99/mediaflowrr:latest
          - FILE_NAME_LANGUAGE=en-EN
          - CRON_SCHEDULE=*/30 * * * *
          - TZ=Europe/Rome
+       restart: unless-stopped
 ```
 
 ## Contributing
