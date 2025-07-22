@@ -14,12 +14,14 @@ jobs:
     outputs:
       new_version: ${{ steps.bump_version.outputs.new_version }}
 
+    if: contains(github.event.head_commit.message, '[skip_bump]') == false
+
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4.2.2
 
       - name: Set up Node.js (for semver)
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v4.4.0
         with:
           node-version: '20'
 
