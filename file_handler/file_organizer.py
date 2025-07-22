@@ -43,6 +43,18 @@ class FileOrganizer:
         logger.debug(f"Extracted title candidate: {title_candidate}")
         return title_candidate
 
+    def extract_tv_info(self, filename):
+        """
+        Returns (title, season, episode) if it's a TV episode, else (None, None, None)
+        """
+        match = re.search(r'(?P<title>.+?)\s+[Ss](?P<season>\d{1,2})[Ee](?P<episode>\d{1,2})', filename)
+        if match:
+            title = match.group('title')
+            season = int(match.group('season'))
+            episode = int(match.group('episode'))
+            return title.strip(), season, episode
+        return None, None, None
+
     def get_file_extension(self, filepath):
         """Gets the file extension from a given filepath."""
         _, ext = os.path.splitext(filepath)
@@ -52,7 +64,7 @@ class FileOrganizer:
         """Checks if a file is a video file based on its extension."""
         return filename.lower().endswith((".mp4", ".avi", ".mkv", ".mov", ".webm"))
 
-    def create_destination_path(self, info, file_type):
+    def create_destination_path(self, info, file_type, season=None):
         """Creates the destination folder path based on movie or TV show information."""
         if file_type == "movie":
             movie_name = info.original_title or info.title
@@ -62,18 +74,28 @@ class FileOrganizer:
         
         elif file_type == "tv":
             show_name = info.original_name or info.name
-            destination_path = os.path.join(self.config.LIBRARY_FOLDER, self.config.TV_FOLDER, show_name)
+            destination_path = os.path.join(
+                self.config.LIBRARY_FOLDER, self.config.TV_FOLDER, show_name
+            )
+
+            if season is not None:
+                season_folder = f"Season {season:02d}"
+                destination_path = os.path.join(destination_path, season_folder)
         
         return destination_path
 
-    def create_new_filename(self, info, file_type):
+    def create_new_filename(self, info, file_type, season=None, episode=None):
         """Creates the new filename based on movie or TV show information."""
         if file_type == "movie":
             movie_name = info.original_title or info.title
             year = info.year
             new_filename = f"{movie_name} ({year})" if year else movie_name
         else:
-            new_filename = info.original_name or info.name  # Use original name for TV shows
+            show_name = info.original_name or info.name
+            if season is not None and episode is not None:
+                new_filename = f"{show_name} - S{season:02d}E{episode:02d}"
+            else:
+                new_filename = show_name
 
         return new_filename
 
@@ -115,14 +137,23 @@ class FileOrganizer:
                 logger.debug(f"Skipping non-video file: {filename}")
                 return
 
-            # Get movie or TV show info from TMDb
-            cleaned_filename = self.clean_filename(filename)
-            info = self.tmdb_client.get_movie_or_tv_info(cleaned_filename)
+            # Check if it looks like a TV episode
+            title_candidate, season, episode = self.extract_tv_info(filename)
+
+            if title_candidate:
+                logger.debug(f"Detected TV show: {title_candidate}, Season {season}, Episode {episode}")
+                file_type = "tv"
+                info = self.tmdb_client.get_movie_or_tv_info(title_candidate, file_type)
+                
+            else:
+                cleaned_filename = self.clean_filename(filename)
+                file_type = "movie"
+                info = self.tmdb_client.get_movie_or_tv_info(cleaned_filename, file_type)
 
             if info:
                 file_type = self.tmdb_client.check_movie_or_tv(info)
-                destination_path = self.create_destination_path(info, file_type)
-                new_filename = self.create_new_filename(info, file_type)
+                destination_path = self.create_destination_path(info, file_type, season)
+                new_filename = self.create_new_filename(info, file_type, season, episode)
 
                 if not os.path.exists(destination_path):
                     os.makedirs(destination_path, exist_ok=True)

@@ -14,7 +14,7 @@ class TMDBClient:
         """Initializes the TMDb client."""
         self.tmdb = TMDb(key=api_key, language=region)
 
-    def get_movie_or_tv_info(self, filename):
+    def get_movie_or_tv_info(self, filename, type):
         """Search TMDB for movie or TV show info, using multiple fuzzy searches."""
         try:
             # Generate different search variations
@@ -29,7 +29,7 @@ class TMDBClient:
             
             for variation in variations:
                 logger.debug(f"Searching for: {variation}")
-                if re.search(r"S\d+", filename):
+                if type == "tv":
                     result = self.tmdb.search().tv(variation)
                 else:
                     result = self.tmdb.search().movies(variation)

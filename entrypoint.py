@@ -22,7 +22,7 @@ def run_scheduler():
     # Set up cron schedule based on current time
     base = datetime.now()
     cron = croniter(cron_schedule, base)
-    logger.info(f"Starting MediaFlowrr {__version__} with cron schedule '{cron_schedule}'")
+    logger.info(f"Starting MediaFlowrr v{__version__} with cron schedule '{cron_schedule}'")
 
     while True:
         # Calculate next scheduled run time
@@ -32,7 +32,6 @@ def run_scheduler():
         if sleep_sec > 0:
             time.sleep(sleep_sec)
         # Run the main function at the scheduled time
-        logger.info("MediaFlowrr started successfully.")
         main()
 
 if __name__ == "__main__":
