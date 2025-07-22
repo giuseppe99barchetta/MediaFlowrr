@@ -23,8 +23,12 @@ class FileProcessor:
                 return
             
             files = [f for f in os.listdir(self.config.SOURCE_FOLDER) if os.path.isfile(os.path.join(self.config.SOURCE_FOLDER, f))]
-            for filename in files:
-                filepath = os.path.join(self.config.SOURCE_FOLDER, filename)
-                self.file_organizer.organize_file(filepath)
+
+            for root, _, files in os.walk(self.config.SOURCE_FOLDER):
+                for filename in files:
+                    filepath = os.path.join(root, filename)
+                    self.file_organizer.organize_file(filepath)
+                    
+            logger.info("File processing completed successfully.")
         except Exception as e:
             logger.error(f"Error processing files: {e}")
