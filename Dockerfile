@@ -8,11 +8,6 @@ WORKDIR /app
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
-# Install system dependencies (if needed, optional)
-# RUN apt-get update && apt-get install -y --no-install-recommends \
-#     build-essential && \
-#     rm -rf /var/lib/apt/lists/*
-
 # Copy only requirements first (better caching)
 COPY requirements.txt .
 
@@ -26,4 +21,4 @@ COPY . .
 # You can also use a .dockerignore file for this
 
 # Default command
-CMD ["python", "main.py"]
+CMD ["python", "entrypoint.py"]

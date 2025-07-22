@@ -3,7 +3,16 @@ services:
   mediaflowrr:
     image: ghcr.io/giuseppe99barchetta/mediaflowrr:latest
     volumes:
-      - /path/to/local/downloads:/media/source
-      - /path/to/local/library:/media/library
+      - /mnt/jdownloader:/media/source
+      - /mnt/jellyfin:/media/library
     env_file:
-      - .env
+      - SOURCE_FOLDER=/jdownloader/downloads
+      - LIBRARY_FOLDER=/path/to/your/library
+      - MOVIE_FOLDER=movies
+      - TV_FOLDER=tv
+      - CHUNK_SIZE=4096
+      - TMDB_API_KEY=YOUR_TMDB_API_KEY
+      - LOG_LEVEL=INFO
+      - FILE_NAME_LANGUAGE=en-EN
+      - CRON_SCHEDULE=*/30 * * * *
+      - TZ=Europe/Rome

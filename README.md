@@ -9,9 +9,10 @@ This project aim to automatically organizes downloaded files from a source folde
 ## Prerequisites
 
 - **Python 3.7+**: The script requires Python 3.7 or higher.
+- **Docker (Optional)**: For containerized deployment.
 - **TMDB API Key (Optional)**: You can obtain an API key from [TMDB](https://www.themoviedb.org/).
 
-## Installation
+### Using Python
 
 1. **Clone the Repository**:
    ```bash
@@ -27,12 +28,14 @@ This project aim to automatically organizes downloaded files from a source folde
 3. **Configure the Script**:
    Create a `.env` file with your specific settings:
 
-   - `SOURCE_FOLDER`: The directory where your downloader place the media.
+   - `SOURCE_FOLDER`: The directory where your downloader places the media.
    - `LIBRARY_FOLDER`: The root directory where your media files are stored.
    - `MOVIE_FOLDER`: The subfolder within `LIBRARY_FOLDER` for movies.
    - `TV_FOLDER`: The subfolder within `LIBRARY_FOLDER` for TV shows.
-   - `TMDB_KEY`: API key retrivied from [TMDB](https://www.themoviedb.org/).
+   - `TMDB_API_KEY`: API key retrieved from [TMDB](https://www.themoviedb.org/).
    - `CHUNK_SIZE`: The chunk size used when copying files from source folder to media folder (adjust if needed).
+   - `CRON_SCHEDULE`: Cron expression to schedule periodic runs inside the container.
+   - `TZ` (optional): Timezone string for scheduling.
 
 ## Usage
 
@@ -41,22 +44,34 @@ This project aim to automatically organizes downloaded files from a source folde
 
 2. **Run the Script**:
    ```bash
-   python main.py
+   python entrypoint.py
    ```
 
 3. **Monitor Logs**:
    The script will log its progress, including any errors or skipped files. Check the console output for information.
 
-## Configuration (`.env`) Example
+---
 
-```python
-# .env
-SOURCE_FOLDER=/jdownloader/downloads
-LIBRARY_FOLDER=/path/to/your/library
-MOVIE_FOLDER=movies
-TV_FOLDER=tv
-CHUNK_SIZE=4096  # Adjust if needed for performance
-TMDB_API_KEY=YOUR_TMDB_API_KEY
+1. **Pull the Docker image from GHCR**:
+   ```bash
+   docker pull ghcr.io/giuseppe99barchetta/mediaflowrr:latest
+
+2. **Run the container, passing your variables**:
+```bash
+   docker run -d \
+     -e SOURCE_FOLDER=/path/to/downloads \
+     -e LIBRARY_FOLDER=/path/to/library \
+     -e MOVIE_FOLDER=movies \
+     -e TV_FOLDER=tv \
+     -e TMDB_API_KEY=your_api_key_here \
+     -e CRON_SCHEDULE="*/30 * * * *" \
+     -e TZ="Europe/Rome" \
+     -v /host/downloads:/path/to/downloads:ro \
+     -v /host/library:/path/to/library \
+     ghcr.io/giuseppe99barchetta/mediaflowrr:latest
+
+2. **Or use the docker-compose.yml**:
+
 ```
 
 ## Contributing

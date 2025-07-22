@@ -60,11 +60,9 @@ jobs:
   build-and-push:
     needs: bump-version
     runs-on: ubuntu-latest
-
     permissions:
       contents: read
       packages: write
-
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4.2.2
@@ -79,17 +77,32 @@ jobs:
           username: giuseppe99barchetta
           password: ${{ secrets.GHCR }}
 
-      - name: Build & Push
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      - name: Build & Push to GHCR and Docker Hub
         id: build-and-push
         env:
           NEW_VERSION: ${{ needs.bump-version.outputs.new_version }}
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: true
-          tags: |
-            ghcr.io/giuseppe99barchetta/mediaflowrr:latest
-            ghcr.io/giuseppe99barchetta/mediaflowrr:${{ env.NEW_VERSION }}
+        run: |
+          echo "Building and pushing tags: latest and $NEW_VERSION"
+
+          # Build and push to GHCR
+          docker buildx build \
+            --platform linux/amd64,linux/arm64 \
+            --push \
+            -t ghcr.io/giuseppe99barchetta/mediaflowrr:latest \
+            -t ghcr.io/giuseppe99barchetta/mediaflowrr:${NEW_VERSION} .
+
+          # Build and push to Docker Hub
+          docker buildx build \
+            --platform linux/amd64,linux/arm64 \
+            --push \
+            -t ciuse99/mediaflowrr:latest \
+            -t ciuse99/mediaflowrr:${NEW_VERSION} .
 
       - name: Image digest
         run: echo "Pushed digest ${{ steps.build-and-push.outputs.digest }}"
