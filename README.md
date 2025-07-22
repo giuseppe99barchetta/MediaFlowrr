@@ -1,0 +1,64 @@
+# MediaFlowrr
+
+This project aim to automatically organizes downloaded files from a source folder (for example JDownloader download folder), renaming them and moving them into appropriate folders based on movie/TV show information retrieved from the TMDB API. It’s designed (but not mandatory) to integrate with media server software like Jellyfin or Plex.
+
+## Prerequisites
+
+- **Python 3.7+**: The script requires Python 3.7 or higher.
+- **TMDB API Key (Optional)**: You can obtain an API key from [TMDB](https://www.themoviedb.org/).
+
+## Installation
+
+1. **Clone the Repository**:
+   ```bash
+   git clone https://github.com/giuseppe99barchetta/MediaFlowrr
+   cd MediaFlowrr
+   ```
+
+2. **Install Dependencies**:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+3. **Configure the Script**:
+   Create a `.env` file with your specific settings:
+
+   - `SOURCE_FOLDER`: The directory where your downloader place the media.
+   - `LIBRARY_FOLDER`: The root directory where your media files are stored.
+   - `MOVIE_FOLDER`: The subfolder within `LIBRARY_FOLDER` for movies.
+   - `TV_FOLDER`: The subfolder within `LIBRARY_FOLDER` for TV shows.
+   - `TMDB_KEY`: API key retrivied from [TMDB](https://www.themoviedb.org/).
+   - `CHUNK_SIZE`: The chunk size used when copying files from source folder to media folder (adjust if needed).
+
+## Usage
+
+1. **Populate Download Folder**:
+   Ensure that the downloader has completed downloading the files you want to organize and they are present in its download folder.
+
+2. **Run the Script**:
+   ```bash
+   python main.py
+   ```
+
+3. **Monitor Logs**:
+   The script will log its progress, including any errors or skipped files. Check the console output for information.
+
+## Configuration (`.env`) Example
+
+```python
+# config.py
+SOURCE_FOLDER = "/jdownloader/downloads"
+LIBRARY_FOLDER = "/path/to/your/library"
+MOVIE_FOLDER = "movies"
+TV_FOLDER = "tv"
+CHUNK_SIZE = 4096  # Adjust if needed for performance
+TMDB_API_KEY = "YOUR_TMDB_API_KEY"
+```
+
+## Contributing
+
+Contributions are welcome! If you find any bugs or have suggestions for improvements, please submit an issue or pull request on GitHub.
+
+## License
+
+This project is licensed under the MIT License. See the `LICENSE` file for details.

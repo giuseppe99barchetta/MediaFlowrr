@@ -32,11 +32,13 @@ class FileOrganizer:
             words = filename.split(".")
             title_candidate = ".".join(words[:min(10, len(words))])
 
-        # Remove any remaining numbers after the title (e.g., full, hd)
-        title_candidate = re.sub(r"(\d{4}).*", r"\1", title_candidate)
+        # Remove a year at the end of the string, but keep numbers in the title
+        title_candidate = re.sub(r"\s*\(?\d{4}\)?\s*$", "", title_candidate)
 
-        # Replace spaces with underscores
+        # Remove common separators and extra spaces
+        title_candidate = re.sub(r"[-_]", " ", title_candidate)
         title_candidate = title_candidate.replace(".", " ")
+        title_candidate = re.sub(r"\s+", " ", title_candidate).strip()
 
         logger.debug(f"Extracted title candidate: {title_candidate}")
         return title_candidate
@@ -123,7 +125,7 @@ class FileOrganizer:
                 new_filename = self.create_new_filename(info, file_type)
 
                 if not os.path.exists(destination_path):
-                    os.makedirs(destination_path)
+                    os.makedirs(destination_path, exist_ok=True)
 
                 self.move_and_rename_file(filepath, destination_path, new_filename)
 

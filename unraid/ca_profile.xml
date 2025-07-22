@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Maintainer>
+    <Icon>https://raw.githubusercontent.com/giuseppe99barchetta/MediaFlowrr/master/unraid/logo.png</Icon>
+    <Profile>
+        The Official MediaFlowrr Repository
+    </Profile>
+    <DonateLink>https://buymeacoffee.com/MediaFlowrr</DonateLink>
+    <DonateText>If you appreciate our work, please consider supporting us by buying us a coffee!</DonateText>
+</Maintainer>

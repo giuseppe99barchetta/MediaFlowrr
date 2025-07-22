@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<Container version="2">
+    <Name>MediaFlowrr</Name>
+    <Repository>ciuse99/mediaflowrr:latest</Repository>
+    <Registry>https://hub.docker.com/r/ciuse99/mediaflowrr</Registry>
+    <Network>host</Network>
+    <Shell>bash</Shell>
+    <Privileged>false</Privileged>
+    <Support>https://github.com/giuseppe99barchetta/mediaflowrr/issues</Support>
+    <Project>https://github.com/giuseppe99barchetta/mediaflowrr</Project>
+    <Overview>MediaFlowrr automatically organizes downloaded media files by identifying movies and TV shows using the TMDB database. It renames and moves files into the appropriate folders, making them ready for use with media servers like Jellyfin or Plex. Designed for simplicity and automation. </Overview>
+    <Category>Downloaders: MediaApp:Video</Category>
+    <Icon>https://raw.githubusercontent.com/giuseppe99barchetta/mediaflowrr/master/unraid/logo.png</Icon>
+    <TemplateURL>https://raw.githubusercontent.com/giuseppe99barchetta/mediaflowrr/master/unraid/mediaflowrr.xml</TemplateURL>
+    <Maintainer>
+        <WebPage>https://github.com/giuseppe99barchetta/mediaflowrr</WebPage>
+    </Maintainer>
+    <Config Name="config" Target="/app/config/config_files" Default="" Mode="rw" Description="" Type="Path" Display="always" Required="false" Mask="false">/mnt/user/appdata/mediaflowrr</Config>
+</Container>
