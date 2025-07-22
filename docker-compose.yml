@@ -1,0 +1,9 @@
+version: "3.8"
+services:
+  mediaflowrr:
+    image: ghcr.io/giuseppe99barchetta/mediaflowrr:latest
+    volumes:
+      - /path/to/local/downloads:/media/source
+      - /path/to/local/library:/media/library
+    env_file:
+      - .env

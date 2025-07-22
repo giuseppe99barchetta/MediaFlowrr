@@ -1,7 +1,9 @@
+
 # MediaFlowrr
 
-![MediaFlowrr Logo](https://github.com/giuseppe99barchetta/MediaFlowrr/blob/main/unraid/logo.png)
-
+<p align="center">
+   <img width="250" height="210" src="https://i.ibb.co/BHF3RGNr/Chat-GPT-Image-22-lug-2025-15-05-35-no-bg-1.png">
+</p>
 This project aim to automatically organizes downloaded files from a source folder (for example JDownloader download folder), renaming them and moving them into appropriate folders based on movie/TV show information retrieved from the TMDB API. It’s designed (but not mandatory) to integrate with media server software like Jellyfin or Plex.
 
 ## Prerequisites

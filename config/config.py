@@ -6,8 +6,8 @@ load_dotenv()  # Load environment variables from .env file
 class Config:
     """Configuration class for application settings."""
 
-    SOURCE_FOLDER = os.environ.get("SOURCE_FOLDER")
-    LIBRARY_FOLDER = os.environ.get("LIBRARY_FOLDER")
+    SOURCE_FOLDER = os.environ.get("SOURCE_FOLDER", "/media/source")
+    LIBRARY_FOLDER = os.environ.get("LIBRARY_FOLDER", "/media/library")
     TMDB_API_KEY = os.environ.get("TMDB_API_KEY")
     MOVIE_FOLDER = os.environ.get("MOVIE_FOLDER")
     TV_FOLDER = os.environ.get("TV_FOLDER")
