@@ -58,6 +58,7 @@ jobs:
           git push origin "v${{ steps.bump_version.outputs.new_version }}" || echo "Tag already pushed"
 
   build-and-push:
+    needs: bump-version
     runs-on: ubuntu-latest
 
     permissions:
