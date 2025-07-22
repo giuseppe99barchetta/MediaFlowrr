@@ -52,6 +52,8 @@ This project aim to automatically organizes downloaded files from a source folde
 
 ---
 
+### Using Docker
+
 1. **Pull the Docker image from GHCR**:
    ```bash
    docker pull ghcr.io/giuseppe99barchetta/mediaflowrr:latest
@@ -76,7 +78,7 @@ This project aim to automatically organizes downloaded files from a source folde
    version: "3.8"
    services:
      mediaflowrr:
-       image: ghcr.io/giuseppe99barchetta/mediaflowrr:latest
+       image: ciuse99/mediaflowrr:latest
        volumes:
          - /mnt/jdownloader:/media/source
          - /mnt/jellyfin:/media/library
