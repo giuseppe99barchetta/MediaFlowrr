@@ -67,8 +67,11 @@ docker pull ciuse99/mediaflowrr:latest
      -e MOVIE_FOLDER=movies \
      -e TV_FOLDER=tv \
      -e TMDB_API_KEY=your_api_key_here \
-     -e CRON_SCHEDULE="*/30 * * * *" \
-     -e TZ="Europe/Rome" \
+     -e CRON_SCHEDULE=*/30 * * * * \
+     -e TZ=Europe/Rome \
+     -e CHUNK_SIZE=4096 \
+     -e LOG_LEVEL=INFO \
+     -e FILE_NAME_LANGUAGE=en-EN \
      -v /host/downloads:/path/to/downloads:ro \
      -v /host/library:/path/to/library \
      ghcr.io/giuseppe99barchetta/mediaflowrr:latest
