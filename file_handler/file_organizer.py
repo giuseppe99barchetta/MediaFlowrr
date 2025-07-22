@@ -64,16 +64,22 @@ class FileOrganizer:
         """Checks if a file is a video file based on its extension."""
         return filename.lower().endswith((".mp4", ".avi", ".mkv", ".mov", ".webm"))
 
+    def sanitize_name_before_saving(self, name):
+        """Remove or replace characters not allowed in Windows file names."""
+        return re.sub(r'[<>:"/\\|?*]', '', name)
+
     def create_destination_path(self, info, file_type, season=None):
         """Creates the destination folder path based on movie or TV show information."""
         if file_type == "movie":
-            movie_name = info.original_title or info.title
+            movie_name = self.sanitize_name_before_saving(info.original_title or info.title)
+            logger.debug(f"Movine name obtained: {movie_name}")
             year = info.year
             movie_folder_name = f"{movie_name} ({year})" if year else movie_name
             destination_path = os.path.join(self.config.LIBRARY_FOLDER, self.config.MOVIE_FOLDER, movie_folder_name)
         
         elif file_type == "tv":
-            show_name = info.original_name or info.name
+            show_name = self.sanitize_name_before_saving(info.original_name or info.name)
+            logger.debug(f"TV show name obtained: {show_name}")
             destination_path = os.path.join(
                 self.config.LIBRARY_FOLDER, self.config.TV_FOLDER, show_name
             )
@@ -87,11 +93,11 @@ class FileOrganizer:
     def create_new_filename(self, info, file_type, season=None, episode=None):
         """Creates the new filename based on movie or TV show information."""
         if file_type == "movie":
-            movie_name = info.original_title or info.title
+            movie_name = self.sanitize_name_before_saving(info.original_title or info.title)
             year = info.year
             new_filename = f"{movie_name} ({year})" if year else movie_name
         else:
-            show_name = info.original_name or info.name
+            show_name = self.sanitize_name_before_saving(info.original_name or info.name)
             if season is not None and episode is not None:
                 new_filename = f"{show_name} - S{season:02d}E{episode:02d}"
             else:
