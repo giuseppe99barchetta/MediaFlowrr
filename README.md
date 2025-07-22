@@ -63,7 +63,7 @@ This project aim to automatically organizes downloaded files from a source folde
 
 ### Using Docker
 
-1. **Pull the Docker image from GHCR**:
+1. **Pull the Docker image from Docker Hub**:
 ```bash
    docker pull ciuse99/mediaflowrr:latest
 ```
@@ -83,7 +83,7 @@ This project aim to automatically organizes downloaded files from a source folde
      -e FILE_NAME_LANGUAGE=en-EN \
      -v /host/downloads:/path/to/downloads:ro \
      -v /host/library:/path/to/library \
-     ghcr.io/giuseppe99barchetta/mediaflowrr:latest
+     ciuse99/mediaflowrr:latest
 ```
 
 2. **Or use the docker-compose**:
@@ -91,21 +91,19 @@ This project aim to automatically organizes downloaded files from a source folde
    version: "3.8"
    services:
      mediaflowrr:
-       image: ghcr.io/giuseppe99barchetta/mediaflowrr:latest
+       image: ciuse99/mediaflowrr:latest
        volumes:
-         - /mnt/jdownloader:/media/source
-         - /mnt/jellyfin:/media/library
+         - /mnt/jdownloader:/media/source # Path to your downloaded media folder
+         - /mnt/jellyfin:/media/library # Path to your media library
        environment:
-         - SOURCE_FOLDER=/jdownloader/downloads
-         - LIBRARY_FOLDER=/path/to/your/library
-         - MOVIE_FOLDER=movies
-         - TV_FOLDER=tv
-         - CHUNK_SIZE=4096
-         - TMDB_API_KEY=YOUR_TMDB_API_KEY
-         - LOG_LEVEL=INFO
-         - FILE_NAME_LANGUAGE=en-EN
-         - CRON_SCHEDULE=*/30 * * * *
-         - TZ=Europe/Rome
+         - MOVIE_FOLDER=movies # Path to your movie folder inside the media library
+         - TV_FOLDER=tv # Path to your TV shows folder inside the media library
+         - CHUNK_SIZE=4096 # Size of the chunks to process (leave as default unless you have specific needs)
+         - TMDB_API_KEY=YOUR_TMDB_API_KEY # Replace with your actual TMDB API key
+         - LOG_LEVEL=INFO # Set the logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+         - FILE_NAME_LANGUAGE=en-EN # Language for file names (e.g., en-EN, it-IT)
+         - CRON_SCHEDULE=*/30 * * * * # Cron schedule for running the service (every 30 minutes)
+         - TZ=Europe/Rome # Set your timezone
        restart: unless-stopped
 ```
 
