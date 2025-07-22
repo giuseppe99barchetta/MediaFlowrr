@@ -80,7 +80,7 @@ This project aim to automatically organizes downloaded files from a source folde
        volumes:
          - /mnt/jdownloader:/media/source
          - /mnt/jellyfin:/media/library
-       env_file:
+       environment:
          - SOURCE_FOLDER=/jdownloader/downloads
          - LIBRARY_FOLDER=/path/to/your/library
          - MOVIE_FOLDER=movies
