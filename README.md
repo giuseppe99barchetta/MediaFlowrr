@@ -6,6 +6,15 @@
 </p>
 This project aim to automatically organizes downloaded files from a source folder (for example JDownloader download folder), renaming them and moving them into appropriate folders based on movie/TV show information retrieved from the TMDB API. It’s designed (but not mandatory) to integrate with media server software like Jellyfin or Plex.
 
+## ✨ Main Features
+✅ **Automatic organization of movies and TV shows** using TMDB metadata
+📁 **Multi-folder support**: recursively scans the source directory
+🧠 **Language detection** from file names
+🛠️ **Smart renaming** with uniform formatting
+🕘 **Full cron job** support for scheduled scans
+🔧 **Simple configuration** via environment variables
+🐳 **Available as a Docker container** via GHCR/Docker Hub or Python Script
+
 ## Prerequisites
 
 - **Python 3.7+**: The script requires Python 3.7 or higher.
