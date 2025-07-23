@@ -19,10 +19,14 @@ def run_scheduler():
         main()
         return
 
+    # Run once immediately at start
+    logger.info(f"Starting MediaFlowrr v{__version__} with cron schedule '{cron_schedule}'")
+    logger.info("Running initial check immediately.")
+    main()
+    
     # Set up cron schedule based on current time
     base = datetime.now()
     cron = croniter(cron_schedule, base)
-    logger.info(f"Starting MediaFlowrr v{__version__} with cron schedule '{cron_schedule}'")
 
     while True:
         # Calculate next scheduled run time

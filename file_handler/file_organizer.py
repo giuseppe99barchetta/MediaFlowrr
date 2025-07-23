@@ -83,7 +83,6 @@ class FileOrganizer:
                 episode = int(match.group('episode'))
                 cleaned_title = re.sub(r'[\.\-_]+', ' ', title).strip()
                 logger.debug(f"Matched with pattern: {pattern}")
-                logger.debug(f"Extracted TV info: Title='{cleaned_title}', Season={season}, Episode={episode}")
                 return cleaned_title, season, episode
 
         logger.debug("No TV info found in filename.")
@@ -153,11 +152,12 @@ class FileOrganizer:
             unit="B",
             unit_scale=True,
             unit_divisor=1024,
-            desc=os.path.basename(filepath),  # Use the original filename for progress bar description
+            desc=os.path.basename(new_filename),
             total=total_size,
+            disable=disable_tqdm,
         ) as pbar:
             try:
-                with open(new_filename, 'rb') as source, open(new_filepath, 'wb') as dest:
+                with open(filepath, 'rb') as source, open(new_filepath, 'wb') as dest:
                     while True:
                         chunk = source.read(self.config.CHUNK_SIZE)
                         if not chunk:
