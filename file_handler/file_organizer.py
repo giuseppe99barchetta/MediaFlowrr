@@ -45,19 +45,39 @@ class FileOrganizer:
 
     def extract_tv_info(self, filename):
         """
-        Returns (title, season, episode) if it's a TV episode, else (None, None, None)
+        Tries multiple regex patterns to extract TV show title, season, and episode info.
+        Returns (title, season, episode) or (None, None, None) if no match is found.
         """
-        match = re.search(r'(?P<title>.*?)\s*[Ss](?P<season>\d{1,2})[Ee](?P<episode>\d{1,2})', filename, re.IGNORECASE)
-        
-        if match:
-            title = self.clean_filename(match.group('title'))
-            season = int(match.group('season'))
-            episode = int(match.group('episode'))
-            logger.debug(f"Extracted TV info: Title='{title}', Season={season}, Episode={episode}")
-            return title.strip(), season, episode
-        
+
+        patterns = [
+            # Example: Stranger.Things.S01E01, stranger things s01e01
+            r'(?P<title>.+?)[\.\s\-_]+[Ss](?P<season>\d{1,2})[Ee](?P<episode>\d{1,2})',
+
+            # Example: Stranger.Things.1x01
+            r'(?P<title>.+?)[\.\s\-_]+(?P<season>\d{1,2})x(?P<episode>\d{1,2})',
+
+            # Example: Stranger Things Season 1 Episode 2
+            r'(?P<title>.+?)[\.\s\-_]+Season[\.\s]*(?P<season>\d{1,2})[\.\s]*Episode[\.\s]*(?P<episode>\d{1,2})',
+
+            # Example: Stranger Things - 1x02 - Episode Title
+            r'(?P<title>.+?)[\.\s\-_]+(?P<season>\d{1,2})x(?P<episode>\d{1,2})[\.\s\-_]+.*',
+
+            # Example: Stranger.Things.102 (Where 102 means Season 1, Episode 2)
+            r'(?P<title>.+?)[\.\s\-_]+(?P<season>\d)(?P<episode>\d{2})\b',
+        ]
+
+        for pattern in patterns:
+            match = re.search(pattern, filename, re.IGNORECASE)
+            if match:
+                title = match.group('title')
+                season = int(match.group('season'))
+                episode = int(match.group('episode'))
+                # Pulisce il titolo da simboli strani
+                cleaned_title = re.sub(r'[\.\-_]+', ' ', title).strip()
+                logger.debug(f"Extracted TV info: Title='{cleaned_title}', Season={season}, Episode={episode}")
+                return cleaned_title, season, episode
+
         logger.debug("No TV info found in filename.")
-        
         return None, None, None
 
     def get_file_extension(self, filepath):
