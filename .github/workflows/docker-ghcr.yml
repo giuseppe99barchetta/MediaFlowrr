@@ -90,17 +90,13 @@ jobs:
         run: |
           echo "Building and pushing tags: latest and $NEW_VERSION"
 
-          # Build and push to GHCR
           docker buildx build \
             --platform linux/amd64,linux/arm64 \
             --push \
+            --cache-from=type=gha \
+            --cache-to=type=gha,mode=max \
             -t ghcr.io/giuseppe99barchetta/mediaflowrr:latest \
-            -t ghcr.io/giuseppe99barchetta/mediaflowrr:${NEW_VERSION} .
-
-          # Build and push to Docker Hub
-          docker buildx build \
-            --platform linux/amd64,linux/arm64 \
-            --push \
+            -t ghcr.io/giuseppe99barchetta/mediaflowrr:${NEW_VERSION} \
             -t ciuse99/mediaflowrr:latest \
             -t ciuse99/mediaflowrr:${NEW_VERSION} .
 
