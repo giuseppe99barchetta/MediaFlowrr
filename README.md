@@ -14,6 +14,7 @@ This project aim to automatically organizes downloaded files from a source folde
 🕘 **Full cron job** support for scheduled scans <br>
 🔧 **Simple configuration** via environment variables <br>
 🐳 **Available as a Docker container** via GHCR/Docker Hub or Python Script <br>
+⚙️ **[Customizable Regex finder](#custom-tv-regex-patterns)** for flexible and precise content matching <br>
 
 ## Prerequisites
 
@@ -161,6 +162,18 @@ journalctl -u mediaflowrr -f
          - TZ=Europe/Rome # Set your timezone
        restart: unless-stopped
 ```
+
+## Custom TV Regex Patterns
+
+You can add custom regular expressions for TV show filename parsing by adding them to the `regex_patterns.txt` file located under the `/config/` directory. This allows the application to better recognize and extract TV show titles, seasons, and episodes from various filename formats.
+
+Example entry in `regex_patterns.txt`:
+```
+(?P<title>.+?)[\.\s\-_]+S(?P<season>\d{1,2})E(?P<episode>\d{1,2})
+(?P<title>.+?)\s+(?P<season>\d{1,2})x(?P<episode>\d{1,2})
+```
+
+Remember to restart the service or container after modifying the regex patterns to apply changes.
 
 ## Contributing
 

@@ -1,4 +1,5 @@
 import os
+import sys
 import re
 import tqdm
 from config.logger import Logger
@@ -12,6 +13,30 @@ class FileOrganizer:
         """Initializes the file organizer."""
         self.config = config
         self.tmdb_client = tmdb_client
+        self.patterns = self.load_regex_patterns()
+        
+    def load_regex_patterns(self):
+        """Load default and user-defined regex patterns for TV info extraction."""
+        default_patterns = [
+            r'(?P<title>.+?)[\.\s\-_]+[Ss](?P<season>\d{1,2})[Ee](?P<episode>\d{1,2})',
+            r'(?P<title>.+?)[\.\s\-_]+(?P<season>\d{1,2})x(?P<episode>\d{1,2})',
+            r'(?P<title>.+?)[\.\s\-_]+Season[\.\s]*(?P<season>\d{1,2})[\.\s]*Episode[\.\s]*(?P<episode>\d{1,2})',
+            r'(?P<title>.+?)[\.\s\-_]+(?P<season>\d{1,2})x(?P<episode>\d{1,2})[\.\s\-_]+.*',
+            r'(?P<title>.+?)[\.\s\-_]+(?P<season>\d)(?P<episode>\d{2})\b',
+        ]
+
+        custom_patterns = []
+        try:
+            with open("../config/regex_patterns.txt", 'r') as f:
+                for line in f:
+                    pattern = line.strip()
+                    if pattern and not pattern.startswith('#'):
+                        custom_patterns.append(pattern)
+            logger.debug(f"Loaded {len(custom_patterns)} custom regex patterns")
+        except FileNotFoundError:
+            logger.warning(f"Regex file '{self.config.REGEX_FILE}' not found. Using default patterns.")
+
+        return custom_patterns + default_patterns
 
     def clean_filename(self, filename):
         """Extracts the most likely title from a JDownloader filename."""
@@ -45,35 +70,17 @@ class FileOrganizer:
 
     def extract_tv_info(self, filename):
         """
-        Tries multiple regex patterns to extract TV show title, season, and episode info.
+        Tries multiple regex patterns (user + default) to extract TV show title, season, and episode info.
         Returns (title, season, episode) or (None, None, None) if no match is found.
         """
-
-        patterns = [
-            # Example: Stranger.Things.S01E01, stranger things s01e01
-            r'(?P<title>.+?)[\.\s\-_]+[Ss](?P<season>\d{1,2})[Ee](?P<episode>\d{1,2})',
-
-            # Example: Stranger.Things.1x01
-            r'(?P<title>.+?)[\.\s\-_]+(?P<season>\d{1,2})x(?P<episode>\d{1,2})',
-
-            # Example: Stranger Things Season 1 Episode 2
-            r'(?P<title>.+?)[\.\s\-_]+Season[\.\s]*(?P<season>\d{1,2})[\.\s]*Episode[\.\s]*(?P<episode>\d{1,2})',
-
-            # Example: Stranger Things - 1x02 - Episode Title
-            r'(?P<title>.+?)[\.\s\-_]+(?P<season>\d{1,2})x(?P<episode>\d{1,2})[\.\s\-_]+.*',
-
-            # Example: Stranger.Things.102 (Where 102 means Season 1, Episode 2)
-            r'(?P<title>.+?)[\.\s\-_]+(?P<season>\d)(?P<episode>\d{2})\b',
-        ]
-
-        for pattern in patterns:
+        for pattern in self.patterns:
             match = re.search(pattern, filename, re.IGNORECASE)
             if match:
                 title = match.group('title')
                 season = int(match.group('season'))
                 episode = int(match.group('episode'))
-                # Pulisce il titolo da simboli strani
                 cleaned_title = re.sub(r'[\.\-_]+', ' ', title).strip()
+                logger.debug(f"Matched with pattern: {pattern}")
                 logger.debug(f"Extracted TV info: Title='{cleaned_title}', Season={season}, Episode={episode}")
                 return cleaned_title, season, episode
 
@@ -134,10 +141,12 @@ class FileOrganizer:
         """Moves and renames the file with a progress bar."""
         original_ext = self.get_file_extension(filepath)
         new_filename += original_ext  # Add extension back
-
         new_filepath = os.path.join(destination_path, new_filename)
-
         total_size = os.path.getsize(filepath)
+        
+        # Disable tqdm if not running in a TTY terminal
+        disable_tqdm = not sys.stdout.isatty()
+        
         with tqdm.tqdm(
             unit="B",
             unit_scale=True,
@@ -146,7 +155,7 @@ class FileOrganizer:
             total=total_size,
         ) as pbar:
             try:
-                with open(filepath, 'rb') as source, open(new_filepath, 'wb') as dest:
+                with open(new_filename, 'rb') as source, open(new_filepath, 'wb') as dest:
                     while True:
                         chunk = source.read(self.config.CHUNK_SIZE)
                         if not chunk:
