@@ -83,7 +83,6 @@ class FileOrganizer:
                 episode = int(match.group('episode'))
                 cleaned_title = re.sub(r'[\.\-_]+', ' ', title).strip()
                 logger.debug(f"Matched with pattern: {pattern}")
-                logger.debug(f"Extracted TV info: Title='{cleaned_title}', Season={season}, Episode={episode}")
                 return cleaned_title, season, episode
 
         logger.debug("No TV info found in filename.")
