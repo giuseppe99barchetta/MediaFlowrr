@@ -153,11 +153,11 @@ class FileOrganizer:
             unit="B",
             unit_scale=True,
             unit_divisor=1024,
-            desc=os.path.basename(filepath),  # Use the original filename for progress bar description
+            desc=os.path.basename(new_filename),  # Use the original filename for progress bar description
             total=total_size,
         ) as pbar:
             try:
-                with open(new_filename, 'rb') as source, open(new_filepath, 'wb') as dest:
+                with open(filepath, 'rb') as source, open(new_filepath, 'wb') as dest:
                     while True:
                         chunk = source.read(self.config.CHUNK_SIZE)
                         if not chunk:
