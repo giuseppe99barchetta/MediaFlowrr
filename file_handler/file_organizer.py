@@ -153,8 +153,9 @@ class FileOrganizer:
             unit="B",
             unit_scale=True,
             unit_divisor=1024,
-            desc=os.path.basename(new_filename),  # Use the original filename for progress bar description
+            desc=os.path.basename(new_filename),
             total=total_size,
+            disable=disable_tqdm,
         ) as pbar:
             try:
                 with open(filepath, 'rb') as source, open(new_filepath, 'wb') as dest:
