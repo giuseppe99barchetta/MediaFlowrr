@@ -47,12 +47,17 @@ class FileOrganizer:
         """
         Returns (title, season, episode) if it's a TV episode, else (None, None, None)
         """
-        match = re.search(r'(?P<title>.+?)\s+[Ss](?P<season>\d{1,2})[Ee](?P<episode>\d{1,2})', filename)
+        match = re.search(r'(?P<title>.*?)\s*[Ss](?P<season>\d{1,2})[Ee](?P<episode>\d{1,2})', filename, re.IGNORECASE)
+        
         if match:
-            title = match.group('title')
+            title = self.clean_filename(match.group('title'))
             season = int(match.group('season'))
             episode = int(match.group('episode'))
+            logger.debug(f"Extracted TV info: Title='{title}', Season={season}, Episode={episode}")
             return title.strip(), season, episode
+        
+        logger.debug("No TV info found in filename.")
+        
         return None, None, None
 
     def get_file_extension(self, filepath):
