@@ -27,14 +27,16 @@ class FileOrganizer:
 
         custom_patterns = []
         try:
-            with open("../config/regex_patterns.txt", 'r') as f:
+            base_dir = os.path.dirname(os.path.abspath(__file__)) 
+            config_path = os.path.join(base_dir, '..', 'config', 'regex_patterns.txt')
+            with open(config_path, 'r') as f:
                 for line in f:
                     pattern = line.strip()
                     if pattern and not pattern.startswith('#'):
                         custom_patterns.append(pattern)
-            logger.debug(f"Loaded {len(custom_patterns)} custom regex patterns")
+            logger.info(f"Loaded {len(custom_patterns)} custom regex patterns")
         except FileNotFoundError:
-            logger.warning(f"Regex file '{self.config.REGEX_FILE}' not found. Using default patterns.")
+            logger.warning(f"Regex file not found. Using default patterns.")
 
         return custom_patterns + default_patterns
 
