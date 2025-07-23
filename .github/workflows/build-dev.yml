@@ -36,7 +36,7 @@ jobs:
             --push \
             --cache-from=type=gha \
             --cache-to=type=gha,mode=max \
-            -t ciuse99/mediaflowrr:${IMAGE_TAG} .
+            -t ciuse99/mediaflowrr:dev .
 
       - name: Image digest
         run: echo "Pushed digest ${{ steps.build-and-push.outputs.digest }}"
