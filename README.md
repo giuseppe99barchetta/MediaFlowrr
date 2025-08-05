@@ -182,4 +182,6 @@ Contributions are welcome! If you find any bugs or have suggestions for improvem
 ## License
 
 This project is licensed under the MIT License. See the `LICENSE` file for details.
-<!-- GitAds-Verify: IGV5SWGDYGQBP3R8MIQNV6GWR1AAMBNZ -->
+
+[![Sponsored by GitAds](https://gitads.dev/v1/ad-serve?source=giuseppe99barchetta/mediaflowrr@github)](https://gitads.dev/v1/ad-track?source=giuseppe99barchetta/mediaflowrr@github)
+
